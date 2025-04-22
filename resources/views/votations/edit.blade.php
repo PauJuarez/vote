@@ -21,8 +21,8 @@
             </ul>
         </div>
     @endif
-ooooooooooooooooooo{{ $votations->id }}
-    {{-- <form action="{{ route('votacions.update', $votations->id) }}" method="POST"> --}}
+ooooooooooooooooooo{{ $votation->id }}
+    {{-- <form action="{{ route('votacions.update', $votation->id) }}" method="POST"> --}}
         <form action="" method="POST">
         @csrf
         @method('PUT')

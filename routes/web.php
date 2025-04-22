@@ -1,15 +1,15 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\VotationsController;
+use App\Http\Controllers\VotationController;
 
 use Illuminate\Support\Facades\Route;
 
-// Ruta para la página principal que llama al método 'index' del VotationsController
-Route::get('/', [VotationsController::class, 'index'])->name('home');
+// Ruta para la página principal que llama al método 'index' del VotationController
+Route::get('/', [VotationController::class, 'index'])->name('home');
 
 // Recurso completo para las votaciones (CRUD)
-Route::resource('votations', VotationsController::class);
+Route::resource('votations', VotationController::class);
 
 // Ruta para el dashboard (solo accesible si el usuario está autenticado)
 Route::get('/dashboard', function () {

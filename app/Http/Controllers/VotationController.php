@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Votations;
+use App\Models\Votation;
 use Illuminate\Http\Request;
 
-class VotationsController extends Controller
+class VotationController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $votations = Votations::latest()->paginate(3);
+        $votations = Votation::latest()->paginate(3);
         return view('votations.index', compact('votations'));
     }
     /**
@@ -38,7 +38,7 @@ class VotationsController extends Controller
         ]);
     
         // Añadir el user_id manualmente
-        Votations::create([
+        Votation::create([
             'title' => $request->title,
             'description' => $request->description,
             'start_date' => $request->start_date,
@@ -52,24 +52,23 @@ class VotationsController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Votations $votations)
+    public function show(Votation $votation)
     {
-        return view('votations.show', compact('votations'));
+        return view('votations.show', compact('votation'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Votations $votation)
+    public function edit(Votation $votation)
     {
-
-        return view('votations.edit', compact($votation));
+        return view('votations.edit', compact('votation' ));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Votations $votations): RedirectResponse
+    public function update(Request $request, Votation $votation): RedirectResponse
     {
         // Validar los datos
         $request->validate([
@@ -81,7 +80,7 @@ class VotationsController extends Controller
         ]);
 
         // Actualizar la encuesta
-        $votations->update($request->all());
+        $votation->update($request->all());
 
         // Redirigir con mensaje de éxito
         return redirect()->route('votations.index')->with('success', 'Encuesta actualizada exitosamente.');
@@ -90,10 +89,10 @@ class VotationsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Votations $votations)
+    public function destroy(Votation $votation)
     {
         // Eliminar la encuesta
-        $votations->delete();
+        $votation->delete();
 
         // Redirigir con mensaje de éxito
         return redirect()->route('votations.index')->with('success', 'Encuesta eliminada exitosamente.');
