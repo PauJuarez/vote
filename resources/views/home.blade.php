@@ -49,7 +49,10 @@
                 </nav>
             @endif
         </header>
-
+        <main class="container py-4">
+            @yield('content')
+        </main>
+        
         @if (Route::has('login'))
             <div class="h-14.5 hidden lg:block"></div>
         @endif
