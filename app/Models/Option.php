@@ -3,17 +3,23 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Votation;
-use App\Models\Vote;
 
 class Option extends Model
 {
+    protected $fillable = [
+        'option_text',
+        'votation_id',
+    ];
+
+    // Relación: una opción pertenece a una votación
     public function votation()
     {
-        return $this->belongsTo(Votation::class);
+        return $this->belongsTo(\App\Models\Votation::class);
     }
 
+    // Relación: una opción tiene muchos votos
     public function votes()
     {
-        return $this->hasMany(Vote::class);
-    }}
+        return $this->hasMany(\App\Models\Vote::class);
+    }
+}

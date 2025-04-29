@@ -17,10 +17,10 @@ class OptionController extends Controller
     public function store(Request $request, Votation $votation)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'option_text' => 'required|string|max:255',
         ]);
 
-        $votation->options()->create($request->only('name'));
+        $votation->options()->create($request->only('option_text'));
 
         return Redirect::route('votations.edit', $votation)->with('success', 'Opción añadida correctamente.');
     }

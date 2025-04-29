@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
 use App\Models\Votation;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
@@ -29,25 +30,35 @@ class VotationController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'title' => 'required|string|max:255',
-            'description' => 'required|string',
+            'description' => 'nullable|string',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after:start_date',
-            'user_id' => 'required|integer|exists:users,id',
-
+            'options' => 'required|array|min:2|max:5',
+            'options.*' => 'string|max:255',
         ]);
     
         // Añadir el user_id manualmente
-        Votation::create([
-            'title' => $request->title,
-            'description' => $request->description,
-            'start_date' => $request->start_date,
-            'end_date' => $request->end_date,
-            'user_id' => $request->user_id,
+        $votation = Votation::create([
+            'title' => $validated['title'],
+            'description' => $validated['description'],
+            'start_date' => $validated['start_date'],
+            'end_date' => $validated['end_date'],
+            'user_id' => Auth::id(), // <-- ¡Aquí va el id del usuario logueado!
         ]);
-    
-        return redirect()->route('home')->with('success', 'Encuesta creada exitosamente.');
+        
+        
+        foreach ($request->options as $optionName) {
+            if (!empty($optionName)) {
+                $votation->options()->create([
+                    'option_text' => $optionName, // ✅ Ahora usas el nuevo nombre
+                    'votation_id' => $votation->id,
+                ]);
+            }
+        }
+        return redirect()->route('votations.index')->with('success', 'Votación creada exitosamente.');
+
     }
 
     /**
