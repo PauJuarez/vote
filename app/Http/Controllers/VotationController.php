@@ -98,6 +98,7 @@ class VotationController extends Controller
         return redirect()->route('votations.index')->with('success', 'Encuesta actualizada exitosamente.');
     }
 
+    
     /**
      * Remove the specified resource from storage.
      */
@@ -108,5 +109,13 @@ class VotationController extends Controller
 
         // Redirigir con mensaje de éxito
         return redirect()->route('votations.index')->with('success', 'Encuesta eliminada exitosamente.');
+    }
+    
+    public function adminDashboard()
+    {
+        if (Gate::allows('access-admin')) {
+            return view('admin.dashboard');
+        }
+        abort(403, 'Unauthorized!');
     }
 }

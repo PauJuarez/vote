@@ -16,8 +16,7 @@ Route::resource('votes', VoteController::class);
 Route::resource('options', OptionController::class)->except(['show', 'index'])->middleware('auth');
 
 Route::post('/votes/{id}/like', [VoteController::class, 'like'])->name('votes.like')->middleware('auth');
-
-
+Route::post('/options/{option}/vote', [VoteController::class, 'likeOption'])->name('votes.like-option')->middleware('auth');
 
 // Ruta para el dashboard (solo accesible si el usuario está autenticado)
 Route::get('/dashboard', function () {

@@ -6,20 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Option extends Model
 {
-    protected $fillable = [
-        'option_text',
-        'votation_id',
-    ];
+    protected $fillable = ['votation_id', 'option_text'];
 
-    // Relación: una opción pertenece a una votación
     public function votation()
     {
-        return $this->belongsTo(\App\Models\Votation::class);
+        return $this->belongsTo(Votation::class);
     }
 
-    // Relación: una opción tiene muchos votos
     public function votes()
     {
-        return $this->hasMany(\App\Models\Vote::class);
+        return $this->hasMany(Vote::class);
     }
 }

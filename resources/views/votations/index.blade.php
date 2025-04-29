@@ -30,68 +30,91 @@
         </nav>
     @endif
 </header>
-<div class="row">
-    <div class="col-12">
-        <h2 class="text-white">CRUD de Tareas</h2>
-        <a href="{{ route('votations.create') }}" class="btn btn-primary">Crear Votacio</a>
-    </div>
 
-    @if (Session::get('success'))
-        <div class="alert alert-success mt-2">
-            <strong>{{ Session::get('success') }}</strong>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12 mb-4">
+            <h2 class="text-white">CRUD de Votaciones</h2>
+            <a href="{{ route('votations.create') }}" class="btn btn-primary">Crear Votación</a>
         </div>
-    @endif  
 
-    <div class="col-12 mt-4">
-        <table class="table table-bordered text-white">
-            <thead>
-                <tr class="text-secondary">
-                    <th>Título</th>
-                    <th>Descripción</th>
-                    <th>Fecha inicio</th>
-                    <th>Fecha cierre</th>
-                    <th>Acción</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($votations as $item)
-                    <tr>
-                        <td class="fw-bold">{{ $item->title }}</td>
-                        <td>{{ $item->description }}</td>
-                        <td>{{ $item->start_date }}</td>
-                        <td>{{ $item->end_date }}</td>
-                        <td>
-                            <!-- Solo muestro el botón de voto si está autenticado -->
-                            @auth
-                                <form action="{{ route('votes.like', $item->id) }}" method="POST" class="d-inline">
-                                    @csrf
-                                    <button type="submit" class="btn btn-success">
-                                        @if ($item->votes()->where('user_id', Auth::id())->exists())
-                                            👍 {{ $item->votes()->count() }} (Ya te gusta)
-                                        @else
-                                            👍 {{ $item->votes()->count() }} (Me gusta)
-                                        @endif
-                                    </button>
-                                </form>
-                            @else
-                                <!-- Si no está autenticado, solo muestro la cantidad de votos -->
-                                <span class="text-white">👍 {{ $item->votes()->count() }} votos</span>
-                            @endauth
-                
-                            <!-- Botones de editar/eliminar siempre visibles o protegidos también si quieres -->
-                            <a href="{{ route('votations.edit', $item->id) }}" class="btn btn-warning">Editar</a>
-                
-                            <form action="{{ route('votations.destroy', $item->id) }}" method="POST" class="d-inline">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger">Eliminar</button>
-                            </form>
-                        </td>
+        @if (Session::get('success'))
+            <div class="alert alert-success mt-2">
+                <strong>{{ Session::get('success') }}</strong>
+            </div>
+        @endif  
+
+        <div class="col-12">
+            <table class="table table-bordered text-white">
+                <thead>
+                    <tr class="text-secondary">
+                        <th>Título</th>
+                        <th>Descripción</th>
+                        <th>Opciones</th>
+                        <th>Fecha inicio</th>
+                        <th>Fecha cierre</th>
+                        <th>Acción</th>
                     </tr>
-                @endforeach
-            </tbody>
-        </table>
-        {{ $votations->links() }}
+                </thead>
+                <tbody>
+                    @foreach ($votations as $votation)
+                        <tr>
+                            <td class="fw-bold">{{ $votation->title }}</td>
+                            <td>{{ $votation->description }}</td>
+                            
+                            <!-- Opciones -->
+                            <td>
+                                @if($votation->options->isNotEmpty())
+                                    <ul class="list-group list-group-flush">
+                                        @foreach ($votation->options as $option)
+                                            <li class="list-group-item bg-dark text-white d-flex justify-content-between align-items-center">
+                                                {{ $option->option_text }}
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <span class="text-white">
+                                                        👍 {{ $option->votes()->count() }} votos
+                                                    </span>
+                                                
+                                                    @auth
+                                                        <form action="{{ route('votes.like-option', $option->id) }}" method="POST" class="d-inline">
+                                                            @csrf
+                                                            <button type="submit" class="btn btn-sm btn-success">
+                                                                @if ($option->votes->where('user_id', auth()->id())->isNotEmpty())
+                                                                    (Quitar voto)
+                                                                @else
+                                                                    (Votar)
+                                                                @endif
+                                                            </button>
+                                                        </form>
+                                                    @endauth
+                                                </div>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                @else
+                                    <span class="text-muted">Sin opciones</span>
+                                @endif
+                            </td>
+
+                            <td>{{ $votation->start_date }}</td>
+                            <td>{{ $votation->end_date }}</td>
+
+                            <!-- Acciones -->
+                            <td>
+                                <a href="{{ route('votations.edit', $votation->id) }}" class="btn btn-warning btn-sm mb-2 w-100">Editar</a>
+
+                                <form action="{{ route('votations.destroy', $votation->id) }}" method="POST" class="d-inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-sm w-100">Eliminar</button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+            {{ $votations->links() }}
+        </div>
     </div>
 </div>
+
 @endsection

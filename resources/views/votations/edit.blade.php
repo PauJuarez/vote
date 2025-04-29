@@ -22,47 +22,50 @@
         </div>
     @endif
 ooooooooooooooooooo{{ $votation->id }}
-        <form action="{{ route('votations.update', $votation->id) }}" method="POST">
-        @csrf
-        @method('PUT')
-        <div class="row">
-            <div class="col-md-12 mt-2">
-                <div class="form-group">
-                    <strong>Título:</strong>
-                    <input type="text" name="title" class="form-control" placeholder="Título de la votación">
-                </div>
-            </div>
+<form action="{{ route('votations.store') }}" method="POST">
+    @csrf
 
-            <div class="col-md-12 mt-2">
-                <div class="form-group">
-                    <strong>Descripción:</strong>
-                    <textarea class="form-control" name="description" style="height: 150px" placeholder="Descripción..."></textarea>
-                </div>
-            </div>
+    <!-- Título -->
+    <div class="mb-3">
+        <label for="title" class="form-label">Título:</label>
+        <input type="text" name="title" id="title" class="form-control" placeholder="Ej: ¿Cuál es tu color favorito?" required>
+    </div>
 
-            <div class="col-md-6 mt-2">
-                <div class="form-group">
-                    <strong>Fecha de inicio:</strong>
-                    <input type="date" name="start_date" class="form-control">
-                </div>
-            </div>
+    <!-- Descripción -->
+    <div class="mb-3">
+        <label for="description" class="form-label">Descripción:</label>
+        <textarea name="description" id="description" class="form-control" rows="4" placeholder="Describe la votación..."></textarea>
+    </div>
 
-            <div class="col-md-6 mt-2">
-                <div class="form-group">
-                    <strong>Fecha de fin:</strong>
-                    <input type="date" name="end_date" class="form-control">
-                </div>
-            </div>
-            <div class="col-md-12 mt-2">
-                <div class="form-group">
-                    <strong>id_user:</strong>
-                    <input type="text" name="user_id" class="form-control" placeholder="id">
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-12 col-md-12 text-center mt-2">
-                <button type="submit" class="btn btn-primary">Actualizar</button>
-            </div>
+    <!-- Fechas -->
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label for="start_date" class="form-label">Fecha de Inicio:</label>
+            <input type="date" name="start_date" id="start_date" class="form-control" required>
         </div>
-    </form>
+        <div class="col-md-6 mb-3">
+            <label for="end_date" class="form-label">Fecha de Fin:</label>
+            <input type="date" name="end_date" id="end_date" class="form-control" required>
+        </div>
+    </div>
+
+    <!-- Opciones dinámicas -->
+    <div id="options-container">
+        <label class="form-label">Opciones:</label>
+
+        <!-- Primera opción (obligatoria) -->
+        <div class="input-group mb-2">
+            <input type="text" name="options[]" class="form-control" placeholder="Opción 1" required>
+            <button type="button" class="btn btn-success add-option">+</button>
+        </div>
+
+        <!-- Más opciones se añadirán aquí mediante JS -->
+    </div>
+
+    <!-- Botón submit -->
+    <div class="d-grid mt-4">
+        <button type="submit" class="btn btn-primary btn-lg">Crear Votación</button>
+    </div>
+</form>
 </div>
 @endsection

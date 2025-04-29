@@ -5,17 +5,22 @@ use Illuminate\Database\Eloquent\Model;
 
 class Vote extends Model
 {
-    protected $table = 'Vote'; // Especificar el nombre de la tabla
+    protected $table = 'Vote'; // Mejor dejar el nombre en minúscula plural
 
-    protected $fillable = ['option_id', 'user_id'];
+    protected $fillable = ['votation_id', 'option_id', 'user_id'];
 
     public function option()
     {
         return $this->belongsTo(Option::class);
     }
 
+    public function votation()
+    {
+        return $this->belongsTo(Votation::class);
+    }
+
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(\App\Models\User::class);
     }
 }
