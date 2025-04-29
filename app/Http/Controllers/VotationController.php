@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Votation;
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 
 class VotationController extends Controller
 {

@@ -7,59 +7,29 @@ use Illuminate\Http\Request;
 
 class OptionController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    // Mostrar formulario para añadir opciones a una votación
+    public function create(Votation $votation): View
     {
-        //
+        return view('options.create', compact('votation'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    // Guardar opción
+    public function store(Request $request, Votation $votation)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        $votation->options()->create($request->only('name'));
+
+        return Redirect::route('votations.edit', $votation)->with('success', 'Opción añadida correctamente.');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Option $option)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Option $option)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Option $option)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
+    // Eliminar opción
     public function destroy(Option $option)
     {
-        //
+        $option->delete();
+
+        return back()->with('success', 'Opción eliminada correctamente.');
     }
 }

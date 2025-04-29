@@ -61,7 +61,26 @@
                         <td>{{ $item->start_date }}</td>
                         <td>{{ $item->end_date }}</td>
                         <td>
+                            <!-- Solo muestro el botón de voto si está autenticado -->
+                            @auth
+                                <form action="{{ route('votes.like', $item->id) }}" method="POST" class="d-inline">
+                                    @csrf
+                                    <button type="submit" class="btn btn-success">
+                                        @if ($item->votes()->where('user_id', Auth::id())->exists())
+                                            👍 {{ $item->votes()->count() }} (Ya te gusta)
+                                        @else
+                                            👍 {{ $item->votes()->count() }} (Me gusta)
+                                        @endif
+                                    </button>
+                                </form>
+                            @else
+                                <!-- Si no está autenticado, solo muestro la cantidad de votos -->
+                                <span class="text-white">👍 {{ $item->votes()->count() }} votos</span>
+                            @endauth
+                
+                            <!-- Botones de editar/eliminar siempre visibles o protegidos también si quieres -->
                             <a href="{{ route('votations.edit', $item->id) }}" class="btn btn-warning">Editar</a>
+                
                             <form action="{{ route('votations.destroy', $item->id) }}" method="POST" class="d-inline">
                                 @csrf
                                 @method('DELETE')
