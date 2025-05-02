@@ -53,9 +53,13 @@
                         <div id="options-container">
                             <label class="form-label">Opciones:</label>
 
-                            <!-- Primera opción (obligatoria) -->
+                            <!-- Primeres 2 opción (obligatoria) -->
                             <div class="input-group mb-2">
                                 <input type="text" name="options[]" class="form-control" placeholder="Opción 1" required>
+                            </div>
+
+                            <div class="input-group mb-2">
+                                <input type="text" name="options[]" class="form-control" placeholder="Opción 2" required>
                                 <button type="button" class="btn btn-success add-option">+</button>
                             </div>
 

@@ -2,27 +2,42 @@
 
 @section('content')
 <header class="w-full lg:max-w-4xl max-w-[335px] text-sm mb-6 not-has-[nav]:hidden">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Laravel</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
+
+    <!-- Styles / Scripts -->
+    @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    @endif
     @if (Route::has('login'))
         <nav class="flex items-center justify-end gap-4">
             @auth
-                <a
-                    href="{{ url('/dashboard') }}"
-                    class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] dark:border-[#3E3E3A] dark:hover:border-[#62605b] rounded-sm text-sm leading-normal"
-                >
-                    Dashboard
-                </a>
+            <a
+            href="{{ url('/dashboard') }}"
+            class="inline-block mt-4 px-6 py-2.5 bg-gradient-to-r from-gray-800 to-gray-900 dark:from-gray-700 dark:to-black text-white font-medium text-sm leading-normal rounded-md shadow-md hover:shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-0.5 border border-gray-700 dark:border-gray-500"
+        >
+            Go to Dashboard
+        </a>
             @else
                 <a
                     href="{{ route('login') }}"
-                    class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] text-[#1b1b18] border border-transparent hover:border-[#19140035] dark:hover:border-[#3E3E3A] rounded-sm text-sm leading-normal"
-                >
+                    class="inline-block mt-4 px-6 py-2.5 bg-gradient-to-r from-gray-800 to-gray-900 dark:from-gray-700 dark:to-black text-white font-medium text-sm leading-normal rounded-md shadow-md hover:shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-0.5 border border-gray-700 dark:border-gray-500"
+                    >
                     Log in
                 </a>
 
                 @if (Route::has('register'))
                     <a
                         href="{{ route('register') }}"
-                        class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] dark:border-[#3E3E3A] dark:hover:border-[#62605b] rounded-sm text-sm leading-normal">
+                        class="inline-block mt-4 px-6 py-2.5 bg-gradient-to-r from-gray-800 to-gray-900 dark:from-gray-700 dark:to-black text-white font-medium text-sm leading-normal rounded-md shadow-md hover:shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-0.5 border border-gray-700 dark:border-gray-500"
+                        >
                         Register
                     </a>
                 @endif
@@ -34,8 +49,17 @@
 <div class="container mt-4">
     <div class="row">
         <div class="col-12 mb-4">
-            <h2 class="text-white">CRUD de Votaciones</h2>
-            <a href="{{ route('votations.create') }}" class="btn btn-primary">Crear Votación</a>
+            <div class="text-center mt-8">
+                <h1 class="text-4xl font-bold text-white drop-shadow-lg">Votaciones</h1>
+                @auth
+                    <p class="text-green-500">Participa y haz tu voto, {{ Auth::user()->name }} 🎉</p>
+                @else
+                    <p class="text-red-500">Si quieres participar loguea.</p>
+                @endauth
+            </div>
+            @if (Gate::allows('access-admin'))
+                <a href="{{ route('votations.create') }}" class="btn btn-primary">Crear Votación</a>
+            @endif
         </div>
 
         @if (Session::get('success'))
@@ -53,7 +77,9 @@
                         <th>Opciones</th>
                         <th>Fecha inicio</th>
                         <th>Fecha cierre</th>
-                        <th>Acción</th>
+                        @if (Gate::allows('access-admin'))
+                            <th>Acción</th>
+                        @endif
                     </tr>
                 </thead>
                 <tbody>
@@ -99,15 +125,18 @@
                             <td>{{ $votation->end_date }}</td>
 
                             <!-- Acciones -->
-                            <td>
-                                <a href="{{ route('votations.edit', $votation->id) }}" class="btn btn-warning btn-sm mb-2 w-100">Editar</a>
+                            @if (Gate::allows('access-admin'))
 
-                                <form action="{{ route('votations.destroy', $votation->id) }}" method="POST" class="d-inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm w-100">Eliminar</button>
-                                </form>
-                            </td>
+                                <td>
+                                    <a href="{{ route('votations.edit', $votation->id) }}" class="btn btn-warning btn-sm mb-2 w-100">Editar</a>
+
+                                    <form action="{{ route('votations.destroy', $votation->id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger btn-sm w-100">Eliminar</button>
+                                    </form>
+                                </td>
+                            @endif
                         </tr>
                     @endforeach
                 </tbody>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Votation;
 use Illuminate\Http\Request;
@@ -22,7 +23,10 @@ class VotationController extends Controller
      */
     public function create()
     {
-        return view('votations.create');
+        if (Gate::allows('access-admin')) {
+            return view('votations.create');
+        }
+        abort(403, 'Unauthorized!');
     }
 
     /**
@@ -74,7 +78,10 @@ class VotationController extends Controller
      */
     public function edit(Votation $votation)
     {
-        return view('votations.edit', compact('votation' ));
+        if (Gate::allows('access-admin')) {
+            return view('votations.edit', compact('votation' ));
+        }
+        abort(403, 'Unauthorized!');
     }
 
     /**
@@ -104,18 +111,15 @@ class VotationController extends Controller
      */
     public function destroy(Votation $votation)
     {
-        // Eliminar la encuesta
-        $votation->delete();
-
-        // Redirigir con mensaje de éxito
-        return redirect()->route('votations.index')->with('success', 'Encuesta eliminada exitosamente.');
-    }
-    
-    public function adminDashboard()
-    {
         if (Gate::allows('access-admin')) {
-            return view('admin.dashboard');
+            // Eliminar la encuesta
+            $votation->delete();
+
+            // Redirigir con mensaje de éxito
+            return redirect()->route('votations.index')->with('success', 'Encuesta eliminada exitosamente.');
         }
         abort(403, 'Unauthorized!');
+
     }
+    
 }

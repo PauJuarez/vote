@@ -4,6 +4,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VotationController;
 use App\Http\Controllers\VoteController;
 use App\Http\Controllers\OptionController;
+use App\Http\Middleware\CheckAdmin;
+
 
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +16,7 @@ Route::get('/', [VotationController::class, 'index'])->name('home');
 Route::resource('votations', VotationController::class);
 Route::resource('votes', VoteController::class);
 Route::resource('options', OptionController::class)->except(['show', 'index'])->middleware('auth');
+Route::get('/admin', function () {return view('dashboard');})->middleware('auth', 'checkadmin');
 
 Route::post('/votes/{id}/like', [VoteController::class, 'like'])->name('votes.like')->middleware('auth');
 Route::post('/options/{option}/vote', [VoteController::class, 'likeOption'])->name('votes.like-option')->middleware('auth');
