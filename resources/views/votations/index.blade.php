@@ -16,51 +16,57 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     @endif
-    @if (Route::has('login'))
-        <nav class="flex items-center justify-end gap-4">
-            @auth
+@if (Route::has('login'))
+    <nav class="flex items-center justify-end gap-4 mt-6">
+        @auth
             <a
-            href="{{ url('/dashboard') }}"
-            class="inline-block mt-4 px-6 py-2.5 bg-gradient-to-r from-gray-800 to-gray-900 dark:from-gray-700 dark:to-black text-white font-medium text-sm leading-normal rounded-md shadow-md hover:shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-0.5 border border-gray-700 dark:border-gray-500"
-        >
-            Go to Dashboard
-        </a>
-            @else
-                <a
-                    href="{{ route('login') }}"
-                    class="inline-block mt-4 px-6 py-2.5 bg-gradient-to-r from-gray-800 to-gray-900 dark:from-gray-700 dark:to-black text-white font-medium text-sm leading-normal rounded-md shadow-md hover:shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-0.5 border border-gray-700 dark:border-gray-500"
-                    >
-                    Log in
-                </a>
+                href="{{ url('/dashboard') }}"
+                class="px-5 py-2 bg-gradient-to-r from-gray-800 to-gray-900 dark:from-gray-700 dark:to-black text-white font-semibold text-sm rounded-md shadow hover:shadow-lg transition transform hover:-translate-y-0.5 border border-gray-700 dark:border-gray-500"
+            >
+                Ir al Dashboard
+            </a>
+        @else
+            <a
+                href="{{ route('login') }}"
+                class="px-5 py-2 bg-gradient-to-r from-gray-800 to-gray-900 dark:from-gray-700 dark:to-black text-white font-semibold text-sm rounded-md shadow hover:shadow-lg transition transform hover:-translate-y-0.5 border border-gray-700 dark:border-gray-500"
+            >
+                Iniciar Sesión
+            </a>
 
-                @if (Route::has('register'))
-                    <a
-                        href="{{ route('register') }}"
-                        class="inline-block mt-4 px-6 py-2.5 bg-gradient-to-r from-gray-800 to-gray-900 dark:from-gray-700 dark:to-black text-white font-medium text-sm leading-normal rounded-md shadow-md hover:shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-0.5 border border-gray-700 dark:border-gray-500"
-                        >
-                        Register
-                    </a>
-                @endif
-            @endauth
-        </nav>
-    @endif
+            @if (Route::has('register'))
+                <a
+                    href="{{ route('register') }}"
+                    class="px-5 py-2 bg-gradient-to-r from-gray-800 to-gray-900 dark:from-gray-700 dark:to-black text-white font-semibold text-sm rounded-md shadow hover:shadow-lg transition transform hover:-translate-y-0.5 border border-gray-700 dark:border-gray-500"
+                >
+                    Registrarse
+                </a>
+            @endif
+        @endauth
+    </nav>
+@endif
+
 </header>
 
 <div class="container mt-4">
     <div class="row">
-        <div class="col-12 mb-4">
-            <div class="text-center mt-8">
-                <h1 class="text-4xl font-bold text-white drop-shadow-lg">Votaciones</h1>
+        <div class="col-12 mb-5">
+            <div class="text-center py-5 bg-dark rounded shadow">
+                <h1 class="display-4 fw-bold text-white mb-3">Votaciones</h1>
+        
                 @auth
-                    <p class="text-green-500">Participa y haz tu voto, {{ Auth::user()->name }} 🎉</p>
+                    <p class="text-success fs-5">¡Participa y haz tu voto, {{ Auth::user()->name }}! 🎉</p>
                 @else
-                    <p class="text-red-500">Si quieres participar loguea.</p>
+                    <p class="text-warning fs-5">Debes iniciar sesión para participar en las votaciones.</p>
                 @endauth
+        
+                @if (Gate::allows('access-admin'))
+                    <a href="{{ route('votations.create') }}" class="btn btn-outline-light mt-3">
+                        <i class="bi bi-plus-circle me-2"></i> Crear Votación
+                    </a>
+                @endif
             </div>
-            @if (Gate::allows('access-admin'))
-                <a href="{{ route('votations.create') }}" class="btn btn-primary">Crear Votación</a>
-            @endif
         </div>
+        
 
         @if (Session::get('success'))
             <div class="alert alert-success mt-2">

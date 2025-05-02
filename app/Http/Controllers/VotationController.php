@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Auth;
 use App\Models\Votation;
+use App\Models\Option;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class VotationController extends Controller
 {
@@ -18,6 +19,7 @@ class VotationController extends Controller
         $votations = Votation::latest()->paginate(3);
         return view('votations.index', compact('votations'));
     }
+
     /**
      * Show the form for creating a new resource.
      */
@@ -52,7 +54,7 @@ class VotationController extends Controller
             'user_id' => Auth::id(), // <-- ¡Aquí va el id del usuario logueado!
         ]);
         
-        
+        // Crear las opciones de la votación
         foreach ($request->options as $optionName) {
             if (!empty($optionName)) {
                 $votation->options()->create([
@@ -61,16 +63,8 @@ class VotationController extends Controller
                 ]);
             }
         }
+
         return redirect()->route('votations.index')->with('success', 'Votación creada exitosamente.');
-
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Votation $votation)
-    {
-        return view('votations.show', compact('votation'));
     }
 
     /**
@@ -79,7 +73,7 @@ class VotationController extends Controller
     public function edit(Votation $votation)
     {
         if (Gate::allows('access-admin')) {
-            return view('votations.edit', compact('votation' ));
+            return view('votations.edit', compact('votation'));
         }
         abort(403, 'Unauthorized!');
     }
@@ -95,17 +89,36 @@ class VotationController extends Controller
             'description' => 'required|string',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after:start_date',
-            'user_id' => 'required|integer|exists:users,id',
+            'options' => 'nullable|array|min:2|max:5', // Opciones son ahora opcionales
+            'options.*' => 'string|max:255',
         ]);
 
-        // Actualizar la encuesta
-        $votation->update($request->all());
+        // Actualizar la votación
+        $votation->update([
+            'title' => $request->input('title'),
+            'description' => $request->input('description'),
+            'start_date' => $request->input('start_date'),
+            'end_date' => $request->input('end_date'),
+            'user_id' => Auth::id(), // Asumiendo que el usuario está autenticado
+        ]);
 
-        // Redirigir con mensaje de éxito
-        return redirect()->route('votations.index')->with('success', 'Encuesta actualizada exitosamente.');
+        // Eliminar las opciones actuales antes de añadir nuevas
+        $votation->options()->delete();
+
+        // Si existen opciones, crearlas nuevamente
+        if ($request->has('options')) {
+            foreach ($request->input('options') as $optionText) {
+                if (!empty($optionText)) {
+                    $votation->options()->create([
+                        'option_text' => $optionText, // El texto de la opción
+                    ]);
+                }
+            }
+        }
+
+        return redirect()->route('votations.index')->with('success', 'Votación actualizada exitosamente.');
     }
 
-    
     /**
      * Remove the specified resource from storage.
      */
@@ -119,7 +132,5 @@ class VotationController extends Controller
             return redirect()->route('votations.index')->with('success', 'Encuesta eliminada exitosamente.');
         }
         abort(403, 'Unauthorized!');
-
     }
-    
 }

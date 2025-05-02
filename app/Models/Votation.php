@@ -20,4 +20,5 @@ class Votation extends Model
     {
         return $this->hasMany(Option::class);
     }
+    
 }
