@@ -5,8 +5,9 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card bg-dark text-white">
-                <div class="card-header">
+                <div class="card-header d-flex justify-content-between align-items-center">
                     <h3 class="card-title mb-0">Crear Nueva Votación</h3>
+                    <a href="{{ route('home') }}" class="btn btn-primary">Volver</a>
                 </div>
                 <div class="card-body">
 

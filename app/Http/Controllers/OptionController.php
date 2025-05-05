@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class OptionController extends Controller
 {
-    // Mostrar formulario para añadir opciones a una votación
+    // Mostrar formulario para añadir opciones a una votación (no usado)
     public function create(Votation $votation): View
     {
         return view('options.create', compact('votation'));

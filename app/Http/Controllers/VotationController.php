@@ -45,7 +45,7 @@ class VotationController extends Controller
             'options.*' => 'string|max:255',
         ]);
     
-        // Añadir el user_id manualmente
+        // Añadir el user_id manualmente(ya no)
         $votation = Votation::create([
             'title' => $validated['title'],
             'description' => $validated['description'],
@@ -58,7 +58,7 @@ class VotationController extends Controller
         foreach ($request->options as $optionName) {
             if (!empty($optionName)) {
                 $votation->options()->create([
-                    'option_text' => $optionName, // ✅ Ahora usas el nuevo nombre
+                    'option_text' => $optionName,
                     'votation_id' => $votation->id,
                 ]);
             }
@@ -89,7 +89,7 @@ class VotationController extends Controller
             'description' => 'required|string',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after:start_date',
-            'options' => 'nullable|array|min:2|max:5', // Opciones son ahora opcionales
+            'options' => 'nullable|array|min:2|max:5', // entre 2 y 5
             'options.*' => 'string|max:255',
         ]);
 
